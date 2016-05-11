@@ -1,0 +1,47 @@
+# Read File Into Vector
+snippet readfile
+	std::vector<char> v;
+	if (FILE *${2:fp} = fopen(${1:"filename"}, "r")) {
+		char buf[1024];
+		while (size_t len = fread(buf, 1, sizeof(buf), $2))
+			v.insert(v.end(), buf, buf + len);
+		fclose($2);
+	}${3}
+# std::map
+snippet map
+	map<${1:key}, ${2:value}> map${3};
+# std::vector
+snippet vector
+	vector<${1:char}> v${2};
+# Namespace
+snippet ns
+	namespace ${1:`Filename('', 'my')`} {
+		${2}
+	} /* $1 */
+# Class
+snippet cl
+	class ${1:`Filename('$1_t', 'name')`} 
+	{
+	public:
+		$1 (${2:arguments});
+	
+	private:
+		${3:/* data */}
+	};
+snippet st
+	struct ${1:`Filename('$1_t', 'name')`} 
+	{
+		${2:/* data */}
+	};${3}
+# #include <...>
+snippet inc
+	#include <${1:cstdio}>${2}
+#using
+snippet usn
+	using namespace ${1:std};${2}
+# For Loop
+snippet for
+	for (int ${1:i} = 0; $1 < ${2:count}; ${3:++}$1) 
+	{
+		${4:/* code */}
+	}
