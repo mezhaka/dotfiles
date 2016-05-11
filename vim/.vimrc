@@ -1,0 +1,434 @@
+call pathogen#infect()
+filetype plugin on 
+
+"set nocompatible
+set encoding=utf-8
+syntax on
+
+map ё `
+map й q
+map ц w
+map у e
+map к r
+map е t
+map н y
+map г u
+map ш i
+map щ o
+map з p
+map х [
+map ъ ]
+
+map ф a
+map ы s
+map в d
+map а f
+map п g
+map р h
+map о j
+map л k
+map д l
+map ж ;
+map э '
+
+map я z
+map ч x
+map с c
+map м v
+map и b
+map т n
+map ь m
+map б ,
+map ю .
+
+map Ё ~
+map Й Q
+map Ц W
+map У E
+map К R
+map Е T
+map Н Y
+map Г U
+map Ш I
+map Щ O
+map З P
+map Х {
+map Ъ }
+
+map Ф A
+map Ы S
+map В D
+map А F
+map П G
+map Р H
+map О J
+map Л K
+map Д L
+map Ж :
+map Э "
+
+map Я Z
+map Ч X
+map С C
+map М V
+map И B
+map Т N
+map Ь M
+map Б <
+map Ю > 
+
+"set keymap=russian-jcukenwin
+"set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz
+
+set scrolloff=3
+set showcmd
+"set wildmode=list:longest
+set wildmode=longest,list,full
+set wildmenu
+
+" Highlight current line
+"set cursorline
+
+set ttyfast
+set laststatus=2
+set relativenumber
+set undofile
+let mapleader = ","
+
+set wrap
+
+" wrapping whole words
+"set linebreak
+
+"set textwidth=80
+set colorcolumn=81
+"set formatoptions=qrn1
+
+""Wrap at this column
+
+set backspace=indent,eol,start    
+"Make backspaces delete sensibly
+
+set tabstop=4                     
+"Indentation levels every four columns
+set expandtab                     
+"Convert all tabs typed to spaces
+set shiftwidth=4                  
+"Indent/outdent by four columns
+set shiftround                    
+"Indent/outdent to nearest tabstop
+
+
+set matchpairs+=<:>               
+"Allow % to bounce between angles too 
+"Inserting these abbreviations inserts the corresponding Perl statement...
+
+"<python shortcuts>
+iab #!p #!/usr/bin/env python2.6
+iab pymain if __name__ == "__main__":
+"</python shortcuts>
+
+"<bash insert shortcuts>
+iab #!b #!/bin/bash<CR>set -u<CR>set -e<CR>#set -x
+"</bash insert shortcuts>
+
+set autowrite
+
+"set mouse=a
+
+set ignorecase smartcase
+set hlsearch
+set incsearch
+
+set foldcolumn=3
+
+nnoremap / /\v
+vnoremap / /\v
+
+" gdefault applies substitutions globally on lines. For example, instead of :%s/foo/bar/g you just type :%s/foo/bar/.
+set gdefault
+set showmatch
+
+" Turn off highlighted stuff.
+nnoremap <leader><space> :noh<cr>
+
+
+" This setting was ruining the Ctrl-i (C-i) navigation shortcut, the opposite
+" of Ctrl-o (C-o)
+"nnoremap <tab> %
+
+" Insert an empty line
+nnoremap <leader>n kA<cr><Esc>
+
+
+"save views automatically
+"autocmd BufWinLeave * mkview
+"autocmd BufWinEnter * silent loadview
+
+syntax enable
+set background=light
+"let g:solarized_termcolors=256
+"colorscheme solarized
+
+"colorscheme desert
+"colorscheme fruidle
+"colorscheme proton
+colorscheme morning
+
+
+
+"highlight Comment ctermfg=lightblue guifg=lightblue
+
+"this is for the syntax coloring
+if $HOST == "vip001"
+    if &term =~ "xterm"
+        if has("terminfo")
+            set t_Co=8
+            set t_Sf=[3%p1%dm
+            set t_Sb=[4%p1%dm
+        else
+            set t_Co=8
+            set t_Sf=[3%dm
+            set t_Sb=[4%dm
+        endif
+    endif
+endif
+
+if $HOST == "genius1"
+    if &term =~ "xterm"
+        "256 color --
+        let &t_Co=256
+        " restore screen after quitting
+        set t_ti=ESC7ESC[rESC[?47h t_te=ESC[?47lESC8
+        if has("terminfo")
+            let &t_Sf="\ESC[3%p1%dm"
+            let &t_Sb="\ESC[4%p1%dm"
+        else
+            let &t_Sf="\ESC[3%dm"
+            let &t_Sb="\ESC[4%dm"
+        endif
+    endif
+endif
+
+" Gnome terminal supports 256 colors and this is how you tell vim about it
+if $COLORTERM == 'gnome-terminal'
+  set t_Co=256
+endif
+
+map <F4> :TlistToggle<cr>
+let Tlist_Sort_Type='name'
+let Tlist_Exit_OnlyWindow = 1
+let Tlist_GainFocus_On_ToggleOpen = 1
+set updatetime=450
+
+
+" Create tags file, probably this can be set up depending on the type of file
+" currently edited
+"map <F8> : !ctags -R --C++-kinds=+pl --fields=+iaS --extra=+q .<cr>
+" This grep thing below is a workaround for some bug in dscanner -- it
+" produces two lines of garbage quite often
+map <F8> : !dscanner --ctags src/ submodules/ \| grep -v '^{ return new void\[n];$' \| grep -v '^})$' > tags <cr>
+"map <F8> : !dscanner --ctags src/ submodules/ > tags<cr>
+
+map <F3> :set hls!<cr>
+map <F2> :clo<cr>
+set ruler
+set hidden
+
+command! -nargs=* Wrap set wrap linebreak nolist
+
+
+" If you want to move the cursor up and down by display lines instead, you can
+" use the commands gk and gj instead.  Hitting two keys in quick succession
+" feels slow compared to pressing a single key whilst holding down a modifier
+" key. I have the following in my .vimrc file:
+"
+"vmap <C-j> gj
+"vmap <C-k> gk
+"vmap <C-4> g$
+"vmap <C-6> g^
+"vmap <C-0> g^
+"nmap <C-j> gj
+"nmap <C-k> gk
+"nmap <C-4> g$
+"nmap <C-6> g^
+"nmap <C-0> g^
+
+
+" Source the vimrc file after saving it
+"if has("autocmd")
+"  autocmd bufwritepost .vimrc source $MYVIMRC
+"endif
+
+noremap ; :
+
+au FocusLost * :wa
+
+" reselect the text that was just pasted
+nnoremap <leader>v V`]
+
+" show opened buffers
+nnoremap <leader>l :ls<cr>
+
+inoremap jj <ESC>
+
+nnoremap <leader>w <C-w>s
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+runtime! ftplugin/man.vim
+
+" I never use F1 as a help invocation, so:
+inoremap <F1> <ESC>
+nnoremap <F1> <ESC>
+vnoremap <F1> <ESC>
+
+" Show invisible symbols, like tabs and etc.
+"set list
+"set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<
+"set listchars=tab:▸\ ,eol:¬
+
+" Options for gvim
+set guifont=Consolas:h10
+
+" Toggle of mouse=a, mouse= is mapped to F12 in toggle_mouse plugin
+
+
+" Automatic identing in C-like languages.
+set cindent shiftwidth=4
+filetype indent on
+set autoindent
+
+
+" Copy current working directory to register.
+" :r!pwd<cr> this pastes the pwd output, d$ deletes the output to register
+" and "_ddk deletes a line into a black hole register and moves cursor one
+" line up.
+nnoremap <leader>p :r!pwd<cr>d$"_ddk
+
+
+" This mapping can turn autoindent off, when I want to paste some text, but
+" I use this seldom and will defenetely forget this mapping, so I leave it
+" here commented out to look up the invpaste command here.
+nnoremap <leader>i :set invpaste paste?<cr>
+"nnoremap <F2> :set invpaste paste?<CR>
+"set pastetoggle=<F2>
+"set showmode
+
+
+" Open quick fix window
+nnoremap <leader>a :copen<cr>
+
+
+" Open SVN diff window
+" map <F9> :new<CR>:read !svn diff<CR>:set syntax=diff buftype=nofile<CR>gg
+
+" Open git diff window
+map <F9> :vnew<CR>:read !git diff --no-ext-diff <CR>:set syntax=diff buftype=nofile<CR>gg
+
+
+" Turn on rainbow parenthesis https://github.com/luochen1990/rainbow.git
+let g:rainbow_active = 1 "0 if you want to enable it later via :RainbowToggle
+let g:rainbow_conf = {
+    \   'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
+    \   'ctermfgs': ['darkblue', 'darkgreen', 'darkcyan', 'darkmagenta'],
+    \   'operators': '_,_',
+    \   'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
+    \   'separately': {
+    \       '*': {},
+    \       'tex': {
+    \           'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
+    \       },
+    \       'lisp': {
+    \           'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
+    \       },
+    \       'vim': {
+    \           'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
+    \       },
+    \       'html': {
+    \           'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
+    \       },
+    \       'css': 0,
+    \   }
+    \}
+
+" Highlight cursor line
+set cursorline
+
+
+" Remove trailing whitespaces on save
+fun! <SID>StripTrailingWhitespaces()
+    let l = line(".")
+    let c = col(".")
+    %s/\s\+$//e
+    call cursor(l, c)
+endfun
+
+autocmd FileType sh,c,cpp,java,php,ruby,python,d autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
+
+
+" Highlight trailing whitespaces
+match Todo /\s\+$/
+
+
+" Jump to the last position when reopening a file
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+
+
+" Set spell check
+"set spell spelllang=en_us
+" Set black foreground in terminal for misspelled words.
+"hi SpellBad ctermfg=000
+
+
+" Turn off wrap around for search
+set nowrapscan
+
+
+" Save session in .session.vim file and load it on startup
+"fu! SaveSess()
+    "execute 'mksession! ' . getcwd() . '/.session.vim'
+"endfunction
+
+"fu! RestoreSess()
+"if filereadable(getcwd() . '/.session.vim')
+    "execute 'so ' . getcwd() . '/.session.vim'
+    "if bufexists(1)
+        "for l in range(1, bufnr('$'))
+            "if bufwinnr(l) == -1
+                "exec 'sbuffer ' . l
+            "endif
+        "endfor
+    "endif
+"endif
+"syntax on
+"endfunction
+
+"autocmd VimLeave * call SaveSess()
+"autocmd VimEnter * call RestoreSess()
+
+
+" Vertical split on startup
+"au VimEnter * vsplit
+
+" Map keys in command mode, so it is similar to bash' shortcuts
+cnoremap <C-a> <Home>
+cnoremap <C-e> <End>
+cnoremap <C-p> <Up>
+cnoremap <C-n> <Down>
+cnoremap <C-b> <Left>
+cnoremap <C-f> <Right>
+cnoremap <M-b> <S-Left>
+cnoremap <M-f> <S-Right>
+
+
+" Close matching braces and other pair symbols
+nmap <Leader>x <Plug>ToggleAutoCloseMappings
+
+
+" Put yanks in my Linux clipboard by default
+set clipboard=unnamedplus
+

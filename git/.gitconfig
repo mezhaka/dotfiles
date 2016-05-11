@@ -1,0 +1,59 @@
+[include]
+    path = ~/.gitconfig_user # put your [user] there
+
+[core]
+	editor = vim
+	excludesfile = ~/.gitignore
+    autocrlf = input
+    pager = less
+
+;[diff]
+    ;external = git_diff_wrapper
+	;tool = vimdiff
+
+[push]
+	default = simple
+
+[diff]
+	tool = meld
+
+[pretty]
+    ol = %Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset
+
+[alias]
+    st = status --short --branch --untracked-files
+    ci = commit
+    br = branch
+    co = checkout
+    d = diff
+    lg = log --graph --pretty=ol --date=relative -20
+    who = shortlog -s --
+    h = help
+    fix = commit --amend --no-edit
+    med = commit --amend --only
+    whatis = show -s --pretty=ol --date=relative
+    aliases = !git config --get-regexp 'alias.*' | colrm 1 6 | sed 's/[ ]/ = /'
+    ff = merge --ff-only @{upstream}
+    m = merge --no-ff
+    rh = reset --hard
+    index = diff --staged
+    rb = rebase
+    recent = for-each-ref --sort=-committerdate refs/heads/ \
+        --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'
+
+[color]
+    ui = auto
+    status = auto
+    branch = auto
+    diff = auto
+
+[merge]
+    ;tool = meld
+    tool = multiple_meld
+	conflictstyle = diff3
+
+[mergetool "multiple_meld"]
+    cmd = $HOME/bin/merge_with_multiple_melds.sh $BASE $LOCAL $REMOTE $MERGED
+
+[rerere]
+	enabled = true
