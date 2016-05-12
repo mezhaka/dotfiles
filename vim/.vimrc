@@ -432,3 +432,24 @@ nmap <Leader>x <Plug>ToggleAutoCloseMappings
 " Put yanks in my Linux clipboard by default
 set clipboard=unnamedplus
 
+
+"When starting up, CtrlP sets its local working directory according to this
+"variable: 
+
+  "let g:ctrlp_working_path_mode = 'ra'
+
+  "c - the directory of the current file.
+  "a - like "c", but only applies when the current working directory outside of
+      "CtrlP isn't a direct ancestor of the directory of the current file.
+  "r - the nearest ancestor that contains one of these directories or files:
+      ".git .hg .svn .bzr _darcs
+  "w - begin finding a root from the current working directory outside of CtrlP
+      "instead of from the directory of the current file (default). Only applies
+      "when "r" is also present.
+  "0 or <empty> - disable this feature.
+
+"Note #1: if "a" or "c" is included with "r", use the behavior of "a" or "c" (as
+"a fallback) when a root can't be found.
+
+"Note #2: you can use a |b:var| to set this option on a per buffer basis
+let g:ctrlp_working_path_mode = ''
