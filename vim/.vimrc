@@ -75,7 +75,7 @@ map И B
 map Т N
 map Ь M
 map Б <
-map Ю > 
+map Ю >
 
 "set keymap=russian-jcukenwin
 "set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz
@@ -85,9 +85,6 @@ set showcmd
 "set wildmode=list:longest
 set wildmode=longest,list,full
 set wildmenu
-
-" Highlight current line
-"set cursorline
 
 set ttyfast
 set laststatus=2
@@ -106,21 +103,21 @@ set colorcolumn=81
 
 ""Wrap at this column
 
-set backspace=indent,eol,start    
 "Make backspaces delete sensibly
+set backspace=indent,eol,start
 
-set tabstop=4                     
+set tabstop=4
 "Indentation levels every four columns
-set expandtab                     
+set expandtab
 "Convert all tabs typed to spaces
-set shiftwidth=4                  
+set shiftwidth=4
 "Indent/outdent by four columns
-set shiftround                    
+"set shiftround
 "Indent/outdent to nearest tabstop
 
 
-set matchpairs+=<:>               
-"Allow % to bounce between angles too 
+set matchpairs+=<:>
+"Allow % to bounce between angles too
 "Inserting these abbreviations inserts the corresponding Perl statement...
 
 "<python shortcuts>
@@ -149,6 +146,7 @@ vnoremap / /\v
 set gdefault
 set showmatch
 
+
 " Turn off highlighted stuff.
 nnoremap <leader><space> :noh<cr>
 
@@ -173,8 +171,12 @@ set background=light
 "colorscheme desert
 "colorscheme fruidle
 "colorscheme proton
-colorscheme morning
+"colorscheme morning
+colorscheme mezhaka
 
+
+" Highlight cursor line
+set cursorline
 
 
 "highlight Comment ctermfg=lightblue guifg=lightblue
@@ -225,6 +227,8 @@ set updatetime=450
 " Create tags file, probably this can be set up depending on the type of file
 " currently edited
 "map <F8> : !ctags -R --C++-kinds=+pl --fields=+iaS --extra=+q .<cr>
+
+
 " This grep thing below is a workaround for some bug in dscanner -- it
 " produces two lines of garbage quite often
 map <F8> : !dscanner --ctags src/ submodules/ \| grep -v '^{ return new void\[n];$' \| grep -v '^})$' > tags <cr>
@@ -278,6 +282,7 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 runtime! ftplugin/man.vim
+
 
 " I never use F1 as a help invocation, so:
 inoremap <F1> <ESC>
@@ -352,9 +357,6 @@ let g:rainbow_conf = {
     \       'css': 0,
     \   }
     \}
-
-" Highlight cursor line
-set cursorline
 
 
 " Remove trailing whitespaces on save
