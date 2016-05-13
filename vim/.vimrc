@@ -300,8 +300,14 @@ set guifont=Consolas:h10
 " Toggle of mouse=a, mouse= is mapped to F12 in toggle_mouse plugin
 
 
-" Automatic identing in C-like languages.
-set cindent shiftwidth=4
+" Automatic indenting in C-like languages.
+" I have turned it off because it ruins the formatting command gq in text
+" files. For example, when it splits a line which has an opening brace on it
+" the next line would be indented. At the same time this setting can be (and
+" is ) turned on the basis of file type.
+"set cindent shiftwidth=4
+
+
 filetype indent on
 set autoindent
 
@@ -455,3 +461,9 @@ set clipboard=unnamedplus
 
 "Note #2: you can use a |b:var| to set this option on a per buffer basis
 let g:ctrlp_working_path_mode = ''
+
+
+" Spell check toggle
+" TODO probably I should fix the problem with comments identification in D
+" sources and then I won't need it anymore
+nnoremap <leader>s :setlocal spell!<cr>
