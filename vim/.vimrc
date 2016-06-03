@@ -495,3 +495,7 @@ map <leader>d :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 
 " Turn off automatic indent for text
 autocmd filetype text set noautoindent
+
+
+" Turn off coloring that makd uses when building from command line
+set makeprg=make\ COLOR=
