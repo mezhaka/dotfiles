@@ -482,3 +482,8 @@ autocmd filetype text call AutoCorrect()
 
 " The trailing space delimits the following symbol to type from :tag
 nnoremap <leader>t :tag 
+
+
+" Open tag in a vertical split
+" map <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
+map <leader>d :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
