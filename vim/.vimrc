@@ -468,3 +468,8 @@ let g:ctrlp_working_path_mode = ''
 " TODO probably I should fix the problem with comments identification in D
 " sources and then I won't need it anymore
 nnoremap <leader>s :setlocal spell!<cr>
+
+
+" I use it so rare that I don't need a map, but rather look up the command
+" here.
+" nnoremap <F5> :UndotreeToggle<cr>
