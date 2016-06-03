@@ -473,3 +473,8 @@ nnoremap <leader>s :setlocal spell!<cr>
 " I use it so rare that I don't need a map, but rather look up the command
 " here.
 " nnoremap <F5> :UndotreeToggle<cr>
+
+
+" Turn on autocorrection plugin if I edit text file.
+" Plugin address: https://github.com/panozzaj/vim-autocorrect.git
+autocmd filetype text call AutoCorrect()
