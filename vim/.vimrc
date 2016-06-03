@@ -487,3 +487,7 @@ nnoremap <leader>t :tag
 " Open tag in a vertical split
 " map <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 map <leader>d :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
+
+
+" Turn off automatic insersion of pair symbols (autoclose.vim) for text files
+" this does not work: autocmd filetype text let g:autoclose_on = 0
