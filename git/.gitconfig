@@ -40,6 +40,7 @@
     rb = rebase
     recent = for-each-ref --sort=-committerdate refs/heads/ \
         --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'
+    msg = log --format=%B -n 1
 
 [color]
     ui = auto
@@ -52,8 +53,11 @@
     tool = multiple_meld
 	conflictstyle = diff3
 
-[mergetool "multiple_meld"]
-    cmd = $HOME/bin/merge_with_multiple_melds.sh $BASE $LOCAL $REMOTE $MERGED
+;[mergetool "multiple_meld"]
+    ;cmd = $HOME/bin/merge_with_multiple_melds.sh $BASE $LOCAL $REMOTE $MERGED
+
+[mergetool "gvimdiff3"]
+    cmd = gvim -f -d -c \"wincmd J\" \"$MERGED\" \"$LOCAL\" \"$BASE\" \"$REMOTE\"
 
 [rerere]
 	enabled = true
