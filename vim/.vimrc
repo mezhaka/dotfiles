@@ -491,3 +491,7 @@ map <leader>d :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 
 " Turn off automatic insersion of pair symbols (autoclose.vim) for text files
 " this does not work: autocmd filetype text let g:autoclose_on = 0
+
+
+" Turn off automatic indent for text
+autocmd filetype text set noautoindent
