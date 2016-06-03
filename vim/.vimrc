@@ -232,7 +232,10 @@ set updatetime=450
 " This grep thing below is a workaround for some bug in dscanner -- it
 " produces two lines of garbage quite often
 map <F8> : !dscanner --ctags src/ submodules/ \| grep -v '^{ return new void\[n];$' \| grep -v '^})$' > tags <cr>
-"map <F8> : !dscanner --ctags src/ submodules/ > tags<cr>
+" Versions of dscanner that worked well for me
+" $dscanner --version
+" v0.3.0-alpha d78ece6cbd4ed060acea33ed9a778e7d99d3b933
+" v0.4.0-alpha 5c5a7572ea474a5969a6b6f6236ea82a64bad844
 
 map <F3> :set hls!<cr>
 map <F2> :clo<cr>
