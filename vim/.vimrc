@@ -478,3 +478,7 @@ nnoremap <leader>s :setlocal spell!<cr>
 " Turn on autocorrection plugin if I edit text file.
 " Plugin address: https://github.com/panozzaj/vim-autocorrect.git
 autocmd filetype text call AutoCorrect()
+
+
+" The trailing space delimits the following symbol to type from :tag
+nnoremap <leader>t :tag 
