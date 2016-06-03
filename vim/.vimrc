@@ -395,8 +395,9 @@ endif
 "hi SpellBad ctermfg=000
 
 
-" Turn off wrap around for search
-set nowrapscan
+" Turn off\on wrap around for search
+"set nowrapscan
+set wrapscan
 
 
 " Save session in .session.vim file and load it on startup
@@ -425,6 +426,7 @@ set nowrapscan
 " Vertical split on startup
 "au VimEnter * vsplit
 
+
 " Map keys in command mode, so it is similar to bash' shortcuts
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
@@ -437,7 +439,7 @@ cnoremap <M-b> <S-Left>
 cnoremap <M-f> <S-Right>
 
 
-" Close matching braces and other pair symbols
+" Toggle close matching braces and other pair symbols
 nmap <Leader>x <Plug>ToggleAutoCloseMappings
 
 
