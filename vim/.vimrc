@@ -499,3 +499,7 @@ autocmd filetype text set noautoindent
 
 " Turn off coloring that makd uses when building from command line
 set makeprg=make\ COLOR=
+
+
+" Force diff to open vertical splits
+set diffopt+=vertical
