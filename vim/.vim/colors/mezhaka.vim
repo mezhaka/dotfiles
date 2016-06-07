@@ -24,7 +24,6 @@ hi StatusLineNC term=reverse cterm=reverse gui=reverse
 hi VertSplit term=reverse cterm=reverse gui=reverse
 hi Visual term=reverse ctermbg=grey guibg=grey80
 hi VisualNOS term=underline,bold cterm=underline,bold gui=underline,bold
-hi DiffText term=reverse cterm=bold ctermbg=Red gui=bold guibg=Red
 hi Cursor guibg=Green guifg=NONE
 hi lCursor guibg=Cyan guifg=NONE
 hi Directory term=bold ctermfg=DarkBlue guifg=Blue
@@ -39,11 +38,19 @@ hi WarningMsg term=standout ctermfg=DarkRed guifg=Red
 hi WildMenu term=standout ctermbg=Yellow ctermfg=Black guibg=Yellow guifg=Black
 hi Folded term=standout ctermbg=Grey ctermfg=DarkBlue guibg=LightGrey guifg=DarkBlue
 hi FoldColumn term=standout ctermbg=Grey ctermfg=DarkBlue guibg=Grey guifg=DarkBlue
+
+" Setting for the text that is actually different, i.e. if we diff two
+" sentences: "Hello, I love you" and  "Ola, I love you", then this is the
+" setting for highlighting words Hello and Ola 
+hi DiffText term=reverse cterm=bold ctermbg=178 gui=bold guibg=Red
+
 hi DiffAdd term=bold ctermbg=LightBlue guibg=LightBlue
 hi DiffChange term=bold ctermbg=LightMagenta guibg=LightMagenta
 hi DiffDelete term=bold ctermfg=Blue ctermbg=LightCyan gui=bold guifg=Blue guibg=LightCyan
+
 " yelowish cursor line that preserves syntax highlighting 
 hi CursorLine   cterm=NONE ctermbg=229 ctermfg=NONE
+
 hi CursorColumn term=reverse ctermbg=grey guibg=grey80
 
 " Colors for syntax highlighting
