@@ -521,3 +521,16 @@ noremap <leader>7 7gt
 noremap <leader>8 8gt
 noremap <leader>9 9gt
 noremap <leader>0 :tablast<cr>"
+
+
+" This will look in the current directory for "tags", and work up the tree
+" towards root until one is found. IOW, you can be anywhere in your source tree
+" instead of just the root of it.
+" set tags=./tags;/
+
+
+" Map .. to go to a parrent directory while browsing git tree with figutive
+autocmd User fugitive 
+  \ if fugitive#buffer().type() =~# '^\%(tree\|blob\)$' |
+  \   nnoremap <buffer> .. :edit %:h<CR> |
+  \ endif
