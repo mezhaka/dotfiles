@@ -143,3 +143,11 @@ export GIT_PS1_SHOWDIRTYSTATE
 GIT_PS1_SHOWUPSTREAM="auto"
 export GIT_PS1_SHOWUPSTREAM
 
+
+# Add timestamp to .bash_history
+export HISTTIMEFORMAT="%d%b%y%T "
+
+
+if [ -f ~/.employer_specific ]; then
+    . ~/.employer_specific
+fi
