@@ -15,10 +15,6 @@ HISTCONTROL=ignoreboth
 # append to the history file, don't overwrite it
 shopt -s histappend
 
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=10000
-HISTFILESIZE=20000
-
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
@@ -151,3 +147,25 @@ export HISTTIMEFORMAT="%d%b%y%T "
 if [ -f ~/.employer_specific ]; then
     . ~/.employer_specific
 fi
+
+
+# Save all history. For setting history length see HISTSIZE and HISTFILESIZE in
+# bash(1)
+HISTSIZE=-1
+HISTFILESIZE=-1
+
+
+# http://briancarper.net/blog/248.html
+# Now, say I type a really long command, e.g. a huge long Perl one-liner, in one
+# terminal, and I want to then access and run that command in another terminal
+# via bash history. With bash's default behavior, I can't do it; each terminal
+# has its own history. What I could do is type history -a in the first terminal,
+# and history -n in the second terminal; then it'd work wonderfully.
+# I find the thought of having to do that all the time tedious, though. Better
+# would be for bash to do it for me every time I run a command. You can
+# accomplish this by putting something like this in ~/.bashrc:
+# export PROMPT_COMMAND="history -a; history -n"
+
+# Currently I have decided to just save history from all terminal sessions,
+# i.e., without reloading.
+export PROMPT_COMMAND="history -a;"
