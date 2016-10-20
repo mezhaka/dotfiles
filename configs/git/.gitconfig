@@ -61,3 +61,5 @@
 
 [rerere]
 	enabled = true
+[user]
+	name = Anton Daneyko

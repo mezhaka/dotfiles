@@ -144,11 +144,6 @@ export GIT_PS1_SHOWUPSTREAM
 export HISTTIMEFORMAT="%d%b%y%T "
 
 
-if [ -f ~/.employer_specific ]; then
-    . ~/.employer_specific
-fi
-
-
 # Save all history. For setting history length see HISTSIZE and HISTFILESIZE in
 # bash(1)
 HISTSIZE=-1
@@ -169,3 +164,9 @@ HISTFILESIZE=-1
 # Currently I have decided to just save history from all terminal sessions,
 # i.e., without reloading.
 export PROMPT_COMMAND="history -a;"
+
+# Local customized path and environment settings, etc.
+if [ -f ~/.bash_local ]; then
+    . ~/.bash_local
+fi
+
