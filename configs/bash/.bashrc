@@ -169,3 +169,8 @@ HISTFILESIZE=-1
 # Currently I have decided to just save history from all terminal sessions,
 # i.e., without reloading.
 export PROMPT_COMMAND="history -a;"
+
+# Local customized path and environment settings, etc.
+if [ -f ~/.bash_local ]; then
+    . ~/.bash_local
+fi
