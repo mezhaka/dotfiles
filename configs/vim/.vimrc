@@ -181,41 +181,9 @@ set cursorline
 
 "highlight Comment ctermfg=lightblue guifg=lightblue
 
-"this is for the syntax coloring
-if $HOST == "vip001"
-    if &term =~ "xterm"
-        if has("terminfo")
-            set t_Co=8
-            set t_Sf=[3%p1%dm
-            set t_Sb=[4%p1%dm
-        else
-            set t_Co=8
-            set t_Sf=[3%dm
-            set t_Sb=[4%dm
-        endif
-    endif
-endif
 
-if $HOST == "genius1"
-    if &term =~ "xterm"
-        "256 color --
-        let &t_Co=256
-        " restore screen after quitting
-        set t_ti=ESC7ESC[rESC[?47h t_te=ESC[?47lESC8
-        if has("terminfo")
-            let &t_Sf="\ESC[3%p1%dm"
-            let &t_Sb="\ESC[4%p1%dm"
-        else
-            let &t_Sf="\ESC[3%dm"
-            let &t_Sb="\ESC[4%dm"
-        endif
-    endif
-endif
-
-" Gnome terminal supports 256 colors and this is how you tell vim about it
-if $COLORTERM == 'gnome-terminal'
-  set t_Co=256
-endif
+" Turn on 256 colors support
+set t_Co=256
 
 map <F4> :TlistToggle<cr>
 let Tlist_Sort_Type='name'
