@@ -26,7 +26,8 @@
     br = branch
     co = checkout
     d = diff
-    lg = log --graph --pretty=ol --date=relative -20
+    l = log --graph --pretty=ol --date=relative -20
+    lg = log --graph --pretty=ol
     who = shortlog -s --
     h = help
     fix = commit --amend --no-edit
