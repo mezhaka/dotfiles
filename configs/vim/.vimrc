@@ -502,3 +502,8 @@ autocmd User fugitive
   \ if fugitive#buffer().type() =~# '^\%(tree\|blob\)$' |
   \   nnoremap <buffer> .. :edit %:h<CR> |
   \ endif
+
+
+" Show hidden files in file explorer
+let NERDTreeShowHidden=1
+
