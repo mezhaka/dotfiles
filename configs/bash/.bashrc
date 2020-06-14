@@ -131,7 +131,7 @@ function git_diff() {
 export PATH=~/bin:$PATH
 export EDITOR=vim
 
-source ~/bin/git-prompt.sh
+source ~/.git-prompt.sh
 
 GIT_PS1_SHOWDIRTYSTATE="1"
 export GIT_PS1_SHOWDIRTYSTATE
