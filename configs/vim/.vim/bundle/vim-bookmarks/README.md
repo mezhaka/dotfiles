@@ -24,6 +24,7 @@ let g:bookmark_highlight_lines = 1
 * [Bookmarks per working directory](https://github.com/MattesGroeger/vim-bookmarks#bookmarks-per-working-directory) (optional)
 * Fully customisable (signs, sign column, highlights, mappings)
 * Integrates with [Unite's](https://github.com/Shougo/unite.vim) quickfix source if installed
+* Integrates with [ctrlp.vim](https://github.com/ctrlpvim/ctrlp.vim) if installed
 * Works independently from [vim marks](http://vim.wikia.com/wiki/Using_marks)
 
 ## Installation
@@ -57,8 +58,9 @@ After installation you can directly start using it. You can do this by either us
 | Show all bookmarks (toggle)                     | `ma`        | `:BookmarkShowAll`           |
 | Clear bookmarks in current buffer only          | `mc`        | `:BookmarkClear`             |
 | Clear bookmarks in all buffers                  | `mx`        | `:BookmarkClearAll`          |
-| Move up bookmark at current line                | `mkk`       | `:BookmarkMoveUp`            |
-| Move down bookmark at current line              | `mjj`       | `:BookmarkMoveDown`          |
+| Move up bookmark at current line                | `[count]mkk`| `:BookmarkMoveUp [<COUNT>]`  |
+| Move down bookmark at current line              | `[count]mjj`| `:BookmarkMoveDown [<COUNT>]`|
+| Move bookmark at current line to another line   | `[count]mg` | `:BookmarkMoveToLine <LINE>` |
 | Save all bookmarks to a file                    |             | `:BookmarkSave <FILE_PATH>`  |
 | Load bookmarks from a file                      |             | `:BookmarkLoad <FILE_PATH>`  |
 
@@ -80,6 +82,7 @@ nmap <Leader>c <Plug>BookmarkClear
 nmap <Leader>x <Plug>BookmarkClearAll
 nmap <Leader>kk <Plug>BookmarkMoveUp
 nmap <Leader>jj <Plug>BookmarkMoveDown
+nmap <Leader>g <Plug>BookmarkMoveToLine
 ```
 You can disable all default key bindings by setting the following in your `~/.vimrc`:
 
@@ -116,6 +119,8 @@ Put any of the following options into your `~/.vimrc` in order to overwrite the 
 | `let g:bookmark_show_toggle_warning = 0`       | 1                        | Enables/disables warning when toggling to clear a bookmark with annotation   |
 | `let g:bookmark_center = 1`                    | 0                        | Enables/disables line centering when jumping to bookmark|
 | `let g:bookmark_no_default_key_mappings = 1`                    | 0                        | Prevent any default key mapping from being created|
+| `let g:bookmark_location_list = 1`             | 0                        | Use the location list to show all bookmarks             |
+| `let g:bookmark_disable_ctrlp = 1`             | 0                        | Disable ctrlp interface when  show all bookmarks             |
 
 ### Bookmarks per working directory
 
@@ -228,6 +233,16 @@ See the screenshot below to get an idea of what you can do with the interface (t
 
 For more information about Unite, start reading `:help Unite`.
 
+## CtrlP Integration
+
+[ctrlp.vim](https://github.com/ctrlpvim/ctrlp.vim) is a Full path fuzzy file, buffer, mru, tag, ... finder for Vim.
+
+Additionally, when showing all your bookmarks, CtrlP is detected and the plugin will open `:CtrlPBookmark` instead of Vim's quickfix window. Note that `g:bookmark_auto_close` is no longer applied. Once opened, the window is managed by CtrlP.
+
+With the CtrlP interface, when you select bookmarks, you can perform the following actions:
+* Open the selected bookmarks in various ways (open to the right, open above, open in new tab, etc.)
+* And more...
+
 ## FAQ
 
 > Why are the colours in the sign column weird?
@@ -273,6 +288,10 @@ endfunction
 autocmd BufEnter * :call BookmarkMapKeys()
 autocmd BufEnter NERD_tree_* :call BookmarkUnmapKeys()
 ```
+
+> Why do my bookmarks disappear when running the `:make` command?
+
+By default, the bookmark list is shown using the quickfix window, which can sometimes conflict with other commands. The location list may be used to show the bookmark list instead by setting the `g:bookmark_location_list` option documented above.
 
 ## Changelog
 
