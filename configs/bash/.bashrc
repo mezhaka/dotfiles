@@ -128,7 +128,6 @@ function git_diff() {
 }
 
 
-export PATH=~/bin:$PATH
 export EDITOR=vim
 
 source ~/.git-prompt.sh
