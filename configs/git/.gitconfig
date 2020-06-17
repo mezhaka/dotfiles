@@ -62,5 +62,10 @@
 
 [rerere]
 	enabled = true
-[user]
-	name = Anton Daneyko
+
+
+; I don't want to store my email in the git repo, so each time I need to set up
+; from dotfiles, I need to create the .gituser file
+[include]
+    path = ~/.gituser
+
