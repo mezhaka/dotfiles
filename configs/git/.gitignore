@@ -9,3 +9,6 @@ tags
 
 # ignore bin directory in projects
 bin/
+
+# mac os
+.DS_Store
