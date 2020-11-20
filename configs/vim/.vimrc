@@ -1,4 +1,6 @@
 call pathogen#infect()
+call pathogen#helptags()
+
 filetype plugin on 
 
 "set nocompatible
