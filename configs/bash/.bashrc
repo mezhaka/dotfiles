@@ -169,3 +169,6 @@ if [ -f ~/.bash_local ]; then
     . ~/.bash_local
 fi
 
+
+alias a='environment_name=$(grep -E "^name: " environment.yml | cut -d: -f2 | tr -d " "); conda activate $environment_name'
+alias d="conda deactivate"
