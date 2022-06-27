@@ -99,9 +99,17 @@ set wrap
 " wrapping whole words
 "set linebreak
 
-"set textwidth=80
-set colorcolumn=81
-"set formatoptions=qrn1
+" Set to 100 instead of the default 80, cause my employer prefers wider lines.
+set textwidth=100
+set colorcolumn=89,101
+
+"See :help fo-table for a table of options.
+"The `t` is to auto-wrap text using textwidth and I do not want it to be automatic.
+"The `q` is to format comments with gq.
+"The `r` is to automatically insert the current comment leader after hitting <Enter>.
+set formatoptions-=t
+set formatoptions=qr
+
 
 ""Wrap at this column
 
