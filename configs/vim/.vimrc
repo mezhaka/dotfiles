@@ -1,7 +1,7 @@
 call pathogen#infect()
 call pathogen#helptags()
 
-filetype plugin on 
+filetype plugin on
 
 "set nocompatible
 set encoding=utf-8
@@ -368,9 +368,9 @@ endif
 
 
 " Set spell check
-"set spell spelllang=en_us
+set spell spelllang=en_us
 " Set black foreground in terminal for misspelled words.
-"hi SpellBad ctermfg=000
+hi SpellBad ctermfg=000
 
 
 " Turn off\on wrap around for search
