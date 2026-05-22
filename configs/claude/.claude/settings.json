@@ -35,6 +35,9 @@
   },
   "alwaysThinkingEnabled": true,
   "skipDangerousModePermissionPrompt": true,
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  },
   "theme": "light",
   "editorMode": "vim",
   "skipAutoPermissionPrompt": true,
