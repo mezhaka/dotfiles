@@ -52,6 +52,16 @@ if [ -n "$branch" ] && [ "$branch" != "(no branch)" ] && [ -n "$cwd" ]; then
                 pr_json=$(cd "$cwd" && gh pr view "$upstream_ref" --json number,title,state 2>/dev/null)
             fi
         fi
+        # Second fallback: `claude --worktree` creates the local branch but
+        # never pushes or sets upstream tracking, so the first fallback misses
+        # on worktree branches whose remote was created via an explicit-refspec
+        # push (which doesn't set tracking). Derive the remote ref from the
+        # worktree convention: strip the `worktree-` prefix, rewrite `+` → `/`.
+        if [ -z "$pr_json" ] && [[ "$branch" == worktree-* ]]; then
+            derived_ref="${branch#worktree-}"
+            derived_ref="${derived_ref//+//}"
+            pr_json=$(cd "$cwd" && gh pr view "$derived_ref" --json number,title,state 2>/dev/null)
+        fi
         if [ -n "$pr_json" ]; then
             pr_num=$(echo "$pr_json" | jq -r '.number // empty')
             pr_title=$(echo "$pr_json" | jq -r '.title // empty')

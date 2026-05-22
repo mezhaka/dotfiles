@@ -1,5 +1,31 @@
 Use `pre-commit run --all-files` for linting.
 
+**No Claude Code attribution in PRs or commits**: when creating a PR, do not
+append the `🤖 Generated with [Claude Code](https://claude.com/claude-code)`
+footer to the body. When creating a commit, do not append the
+`Co-Authored-By: Claude ...` trailer. Both are off by default in every repo.
+
+**Reference the Shortcut story in commits and PR descriptions**: every commit
+message AND every PR description must end with a line
+`Part of https://app.shortcut.com/othoz42/story/XXX`, where `XXX` is the numeric
+Shortcut story ID. When the current branch follows the
+`{type}/sc-{story_id}-{slug}` convention, extract the ID with:
+`git branch --show-current | sed -E 's/.*sc-([0-9]+)-.*/\1/'`. If no story ID
+is known from context or the branch name, ask before committing or opening the
+PR rather than omitting the line. For commits, use an **unquoted** heredoc
+(`<<EOF`, not `<<'EOF'`) so the command substitution actually expands.
+
+**Commit message body — motivation, not mechanics**: the diff already shows
+*what* changed; the body should explain *why*. Following the Pro Git §5.2
+guideline ("contrast its implementation with previous behavior",
+https://git-scm.com/book/en/v2/Distributed-Git-Contributing-to-a-Project),
+open the body by describing the prior behavior and the problem it caused,
+then state how this commit changes it. "Prior to this change, …" is a useful
+default opener. Skip restating the code-level diff — if a reader needs the
+*what*, they can read the patch. **Scope**: applies to non-trivial commits;
+small fixes (typos, dependency bumps, formatting-only changes) don't need a
+body at all — a clear subject line is enough.
+
 **Shortcut CLI**: Use the `short` command (https://github.com/shortcut-cli/shortcut-cli) to interact
 with Shortcut stories and epics. For searching stories, use search operators for efficient
 server-side filtering. Example: `short search "epic:34220" -f "%id\t%updated" -q` fetches all
@@ -19,6 +45,10 @@ curl -sS -X POST "https://api.app.shortcut.com/api/v3/files" \
 Returns a JSON array with the new file's `id` and confirms the attachment via
 `story_ids: [<story_id>]`. To attach the same file to multiple stories, repeat the upload — there's
 no documented "associate existing file with another story" endpoint.
+
+**PR description format**: do not start PR descriptions with a `## Summary`
+header — the opening paragraph is already understood to be the summary. Start
+directly with the summary content.
 
 **Draft PR titles**: when opening a PR as a draft (`gh pr create --draft`),
 prepend `WIP: ` to the title (e.g. `WIP: Constrain apa-pm IAM (sc-36821)`).
