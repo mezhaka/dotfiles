@@ -1,11 +1,16 @@
-[include]
-    path = ~/.gitconfig_user # put your [user] there
+;[include]
+    ;path = ~/.gitconfig_user # put your [user] there
+[includeIf "gitdir:~/t/"]
+    path = ~/t/.gitconfig_user
+
+[includeIf "gitdir:~/fun/"]
+    path = ~/fun/.gitconfig_user
 
 [core]
 	editor = vim
 	excludesfile = ~/.gitignore
     autocrlf = input
-    pager = less
+	pager = less -F -X  # page only if does not fit on screen
 
 ;[diff]
     ;external = git_diff_wrapper
@@ -13,6 +18,7 @@
 
 [push]
 	default = simple
+	autoSetupRemote = true
 
 [diff]
 	tool = meld
@@ -28,6 +34,7 @@
     d = diff
     l = log --graph --pretty=ol --date=relative -20
     lg = log --graph --pretty=ol
+    lgh = "!sh -c 'git log --graph --pretty=ol | head'"
     who = shortlog -s --
     h = help
     fix = commit --amend --no-edit
@@ -42,6 +49,8 @@
     recent = for-each-ref --sort=-committerdate refs/heads/ \
         --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'
     msg = log --format=%B -n 1
+    find-merge = "!sh -c 'commit=$0 && branch=${1:-HEAD} && (git rev-list $commit..$branch --ancestry-path | cat -n; git rev-list $commit..$branch --first-parent | cat -n) | sort -k2 -s | uniq -f1 -d | sort -n | tail -1 | cut -f2'"
+    show-merge = "!sh -c 'merge=$(git find-merge $0 $1) && [ -n \"$merge\" ] && git show $merge'"
 
 [color]
     ui = auto
@@ -51,14 +60,18 @@
 
 [merge]
     ;tool = meld
-    tool = multiple_meld
+    ;tool = multiple_meld
+    tool = vimdiff
 	conflictstyle = diff3
 
 ;[mergetool "multiple_meld"]
     ;cmd = $HOME/bin/merge_with_multiple_melds.sh $BASE $LOCAL $REMOTE $MERGED
 
-[mergetool "gvimdiff3"]
-    cmd = gvim -f -d -c \"wincmd J\" \"$MERGED\" \"$LOCAL\" \"$BASE\" \"$REMOTE\"
+[mergetool "vimdiff"]
+    cmd = vim -f -d -c \"wincmd J\" \"$MERGED\" \"$LOCAL\" \"$BASE\" \"$REMOTE\"
+
+;[mergetool "gvimdiff3"]
+;    cmd = gvim -f -d -c \"wincmd J\" \"$MERGED\" \"$LOCAL\" \"$BASE\" \"$REMOTE\"
 
 [rerere]
 	enabled = true
@@ -73,10 +86,11 @@
 	ff = only
 [pager]
 	branch = false
-[filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
 [commit]
-	template = ~/.gitmessage
+	template = ~/.gitmessage.txt
+[init]
+	defaultBranch = main
+[credential]
+	helper = osxkeychain
+[rebase]
+	autoStash = true
