@@ -101,7 +101,7 @@ set wrap
 
 " Set to 100 instead of the default 80, cause my employer prefers wider lines.
 set textwidth=100
-set colorcolumn=89,101
+set colorcolumn=100
 
 "See :help fo-table for a table of options.
 "The `t` is to auto-wrap text using textwidth and I do not want it to be automatic.
@@ -209,7 +209,7 @@ set updatetime=450
 
 " This grep thing below is a workaround for some bug in dscanner -- it
 " produces two lines of garbage quite often
-map <F8> : !dscanner --ctags src/ submodules/ \| grep -v '^{ return new void\[n];$' \| grep -v '^})$' > tags <cr>
+"map <F8> : !dscanner --ctags src/ submodules/ \| grep -v '^{ return new void\[n];$' \| grep -v '^})$' > tags <cr>
 " Versions of dscanner that worked well for me
 " $dscanner --version
 " v0.3.0-alpha d78ece6cbd4ed060acea33ed9a778e7d99d3b933
@@ -421,9 +421,12 @@ cnoremap <M-f> <S-Right>
 nmap <Leader>x <Plug>ToggleAutoCloseMappings
 
 
+" I've turned it off, cause on Mac OS it puts the yanked text _only_ into the
+" clipboard, that is not into the vim's clipboard.
 " Put yanks in my Linux clipboard by default
-set clipboard=unnamedplus
-
+" set clipboard=unnamedplus
+" Just saw Grisha using it and it works fine on my MacOs laptop
+set clipboard=unnamed
 
 "When starting up, CtrlP sets its local working directory according to this
 "variable: 
@@ -450,7 +453,7 @@ let g:ctrlp_working_path_mode = ''
 " Spell check toggle
 " TODO probably I should fix the problem with comments identification in D
 " sources and then I won't need it anymore
-nnoremap <leader>s :setlocal spell!<cr>
+nnoremap <leader>p :setlocal spell!<cr>
 
 
 " I use it so rare that I don't need a map, but rather look up the command
@@ -485,7 +488,7 @@ set makeprg=make\ COLOR=
 
 
 " Force diff to open vertical splits
-set diffopt+=vertical
+" set diffopt+=vertical
 
 
 " Go to tab by number
@@ -516,4 +519,5 @@ autocmd User fugitive
 
 " Show hidden files in file explorer
 let NERDTreeShowHidden=1
+
 
