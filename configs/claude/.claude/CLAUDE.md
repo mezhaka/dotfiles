@@ -26,25 +26,38 @@ default opener. Skip restating the code-level diff — if a reader needs the
 small fixes (typos, dependency bumps, formatting-only changes) don't need a
 body at all — a clear subject line is enough.
 
-**Shortcut CLI**: Use the `short` command (https://github.com/shortcut-cli/shortcut-cli) to interact
-with Shortcut stories and epics. For searching stories, use search operators for efficient
-server-side filtering. Example: `short search "epic:34220" -f "%id\t%updated" -q` fetches all
-stories from epic 34220 with their IDs and updated dates in quiet mode (no loading spinner).
-To rename an epic, use the API command: `short api /epics/{epic_id} -X PUT -f name="New Epic Name"`.
+**Shortcut tooling — default to the `shotcut` MCP, fall back to `short` CLI**:
 
-**Attaching files to Shortcut stories**: neither `short` (verified up to v5.0.0) nor the
-`mcp__shotcut__stories-upload-file` MCP tool work for local-file uploads — `short` lacks the
-command, and the hosted MCP can't see the local filesystem. Use `curl` against the API directly:
-```
-SHORTCUT_TOKEN=$(jq -r .token ~/.config/shortcut-cli/config.json)
-curl -sS -X POST "https://api.app.shortcut.com/api/v3/files" \
-  -H "Shortcut-Token: $SHORTCUT_TOKEN" \
-  -F "file0=@/absolute/path/to/file" \
-  -F "story_id=<story_id>"
-```
-Returns a JSON array with the new file's `id` and confirms the attachment via
-`story_ids: [<story_id>]`. To attach the same file to multiple stories, repeat the upload — there's
-no documented "associate existing file with another story" endpoint.
+- **Default**: use the `shotcut` MCP (`mcp__shotcut__*`) for any single-object
+  operation — fetching a story or epic by ID, creating/updating a story,
+  posting a comment, setting state, reading workflow/team/iteration metadata,
+  getting a branch-name suggestion. Returns structured JSON, no shell parsing,
+  and avoids spending a Bash turn on what should be one call. Common ones:
+  `stories-get-by-id`, `stories-search`, `stories-create`, `stories-update`,
+  `stories-create-comment`, `epics-get-by-id`, `epics-update`,
+  `epics-create-comment`, `iterations-*`, `stories-get-branch-name`.
+- **Use the `short` CLI (https://github.com/shortcut-cli/shortcut-cli) only
+  when MCP can't do the job efficiently**:
+  - **Bulk / server-side-filtered search** with operators that `stories-search`
+    doesn't expose: `short search "epic:34220 state:done" -f "%id\t%updated" -q`.
+  - **Raw API passthrough** for endpoints no MCP tool covers, e.g. epic
+    rename: `short api /epics/{epic_id} -X PUT -f name="New Epic Name"`.
+  - **Scripted loops** over many stories where one MCP call per item would
+    be wasteful — write the `short` pipeline once, run it in Bash.
+- **File uploads**: neither `short` (verified up to v5.0.0) nor
+  `mcp__shotcut__stories-upload-file` work for local files — `short` lacks the
+  command, and the hosted MCP can't see the local filesystem. Use `curl`:
+  ```
+  SHORTCUT_TOKEN=$(jq -r .token ~/.config/shortcut-cli/config.json)
+  curl -sS -X POST "https://api.app.shortcut.com/api/v3/files" \
+    -H "Shortcut-Token: $SHORTCUT_TOKEN" \
+    -F "file0=@/absolute/path/to/file" \
+    -F "story_id=<story_id>"
+  ```
+  Returns a JSON array with the new file's `id` and confirms the attachment via
+  `story_ids: [<story_id>]`. To attach the same file to multiple stories, repeat
+  the upload — there's no documented "associate existing file with another
+  story" endpoint.
 
 **PR description format**: do not start PR descriptions with a `## Summary`
 header — the opening paragraph is already understood to be the summary. Start
@@ -69,3 +82,8 @@ story is known from the conversation context**, do NOT invent a
 non-conforming branch name — first ask the user for the story ID, or
 suggest creating one (e.g. via `mcp__shotcut__stories-create`) before
 creating the branch.
+
+**Off-topic questions**: when asked something outside the software-engineering
+scope (e.g. device settings, general life questions), just answer directly if
+you know the answer. Don't preface with disclaimers about being a CLI tool or
+your scope.
