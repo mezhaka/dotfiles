@@ -67,6 +67,15 @@ directly with the summary content.
 prepend `WIP: ` to the title (e.g. `WIP: Constrain apa-pm IAM (sc-36821)`).
 Drop the prefix when marking the PR ready for review.
 
+**Draft PR reviews — trigger Copilot + Gemini, then act on their comments**:
+when asked to create a draft PR, after opening it, request reviews from
+GitHub Copilot and Gemini (whichever bots are configured on the repo), then
+wait for their review comments to land and address them on the user's
+behalf — apply suggested fixes, push follow-up commits, and resolve or
+reply to threads as appropriate. Use judgment on which comments to accept
+vs. push back on; flag anything non-obvious before acting. No need to ask
+for permission to kick off the reviews — it's pre-authorized for draft PRs.
+
 **Branch naming for ultramarin-ai PRs**: PR branches use
 `{type}/sc-{story_id}-{slug}` — e.g. `chore/sc-36788-raise-pd-ssd-quota-europe-west3`.
 `{type}` is the Shortcut story type (`chore`, `feature`, or `bug`);
@@ -82,6 +91,22 @@ story is known from the conversation context**, do NOT invent a
 non-conforming branch name — first ask the user for the story ID, or
 suggest creating one (e.g. via `mcp__shotcut__stories-create`) before
 creating the branch.
+
+**Session naming for Shortcut work**: when this session's work becomes
+associated with a specific Shortcut story — typically because the user
+mentions a story ID, names a worktree path under
+`<repo>/{type}/sc-{story_id}-{slug}/`, or your own commands `cd` into such
+a worktree — suggest a `/rename` command so the session shows up tagged
+in the Claude agents view. Sessions are commonly launched from a parent
+directory like `~/t/e`, so cwd at launch is *not* the signal; wait until
+the story or worktree comes up in the conversation. The rename target is
+the post-`{type}/` slug — `sc-{story_id}-{slug}`, not the full branch
+path. If only the story ID is known, look up the slug via
+`mcp__shotcut__stories-get-branch-name`. Phrase as a one-line paste-ready
+suggestion, e.g. `/rename sc-36658-set-up-apa-gui-for-a-new-windows-user`.
+You cannot invoke `/rename` yourself — it's a user-typed slash command.
+Suggest once per session, on the turn the association is first
+established; don't re-prompt later.
 
 **Off-topic questions**: when asked something outside the software-engineering
 scope (e.g. device settings, general life questions), just answer directly if
