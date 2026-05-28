@@ -1,0 +1,150 @@
+#!/usr/bin/env bash
+# weekly-report — Shortcut weekly activity report for your team-lead 1:1.
+#
+# Usage:
+#   weekly-report                       Last week (previous Mon..Sun)
+#   weekly-report --this-week           Current week (Mon..today, but the
+#                                       query still covers Mon..Sun)
+#   weekly-report --week 2026-05-20     Week containing the given date
+#   weekly-report --from D1 --to D2     Explicit inclusive date range
+#   weekly-report --user mention_name   Report on a different user
+#
+# Sections (each story appears in exactly one):
+#   Completed  — owner:<you> completed in window, plus any requester:<you>
+#                story created in window that is currently in a done-type
+#                state (so a ticket you filed and someone else closed still
+#                lands here).
+#   Active     — owner:<you> updated in window and not yet done, plus any
+#                requester:<you> story created in window that is currently
+#                in a started-type state. NOTE: "updated in window, not
+#                done" is broader than "In Progress" — a Backlog item you
+#                touched will show up here too.
+#   Created    — requester:<you> created in window, with anything already
+#                listed under Completed or Active removed. In practice this
+#                ends up being the backlog / unstarted tickets you filed.
+#
+# Output is Markdown on stdout.
+
+set -euo pipefail
+
+MODE=""
+WEEKDATE=""
+FROM=""
+TO=""
+WHO=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --this-week) MODE=this; shift ;;
+    --week)      WEEKDATE=$2; shift 2 ;;
+    --from)      FROM=$2; shift 2 ;;
+    --to)        TO=$2; shift 2 ;;
+    --user)      WHO=$2; shift 2 ;;
+    -h|--help)
+      sed -n '/^# weekly-report/,/^$/p' "$0" | sed 's/^# \{0,1\}//'
+      exit 0 ;;
+    *) echo "weekly-report: unknown arg: $1" >&2; exit 2 ;;
+  esac
+done
+
+TODAY=$(date +%Y-%m-%d)
+
+monday_of() {
+  local d=$1 dow
+  dow=$(date -j -f %Y-%m-%d "$d" +%u)
+  date -j -f %Y-%m-%d -v-$((dow-1))d "$d" +%Y-%m-%d
+}
+shift_days() { date -j -f %Y-%m-%d -v"$2"d "$1" +%Y-%m-%d; }
+
+if [[ -n "$FROM" && -n "$TO" ]]; then
+  :
+elif [[ -n "$WEEKDATE" ]]; then
+  FROM=$(monday_of "$WEEKDATE")
+  TO=$(shift_days "$FROM" +6)
+elif [[ "$MODE" == "this" ]]; then
+  FROM=$(monday_of "$TODAY")
+  TO=$(shift_days "$FROM" +6)
+else
+  THIS_MON=$(monday_of "$TODAY")
+  FROM=$(shift_days "$THIS_MON" -7)
+  TO=$(shift_days "$THIS_MON" -1)
+fi
+
+# Strip the ANSI loading-spinner prefix that `short api` writes on stderr-style
+# but actually emits on stdout, then keep from the first JSON token onward.
+api() {
+  short api "$@" 2>/dev/null \
+    | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g' \
+    | sed -n '/^[[{]/,$p'
+}
+
+if [[ -z "$WHO" ]]; then
+  WHO=$(api /member | jq -r .mention_name)
+fi
+
+STATE_MAP=$(api /workflows \
+  | jq '[.[] | .states[] | {(.id|tostring): {name, type}}] | add')
+
+search() {
+  api /search/stories -f "query=$1" -f page_size=50 | jq '.data'
+}
+
+section() {
+  local title=$1 json=$2 date_field=$3
+  local count
+  count=$(jq 'length' <<<"$json")
+  printf '## %s (%d)\n\n' "$title" "$count"
+  if [[ $count -eq 0 ]]; then
+    printf '_None._\n\n'
+    return
+  fi
+  jq -r --argjson states "$STATE_MAP" --arg df "$date_field" '
+    sort_by(.[$df] // "") | reverse | .[] |
+    "- [sc-\(.id)](\(.app_url)) **\(.story_type)** — \(.name)" +
+    " _(\($states[(.workflow_state_id|tostring)].name // "?"))_"
+  ' <<<"$json"
+  printf '\n'
+}
+
+COMPLETED_RAW=$(search "owner:$WHO completed:$FROM..$TO")
+CREATED_RAW=$(search "requester:$WHO created:$FROM..$TO")
+ACTIVE_RAW=$(search "owner:$WHO updated:$FROM..$TO -is:done")
+
+# Split created-in-window stories by current workflow-state type, so any item
+# already in a "done" state lands in Completed regardless of ownership, and any
+# item in a "started" state is treated as Active rather than Created.
+CREATED_DONE=$(jq --argjson states "$STATE_MAP" \
+  '[.[] | select($states[(.workflow_state_id|tostring)].type == "done")]' \
+  <<<"$CREATED_RAW")
+CREATED_ACTIVE=$(jq --argjson states "$STATE_MAP" \
+  '[.[] | select($states[(.workflow_state_id|tostring)].type == "started")]' \
+  <<<"$CREATED_RAW")
+CREATED_REST=$(jq --argjson states "$STATE_MAP" \
+  '[.[] | select(($states[(.workflow_state_id|tostring)].type | IN("done","started")) | not)]' \
+  <<<"$CREATED_RAW")
+
+# Completed = (owner:me, completed in window) ∪ (requester:me, currently done).
+COMPLETED=$(jq -s 'add | unique_by(.id)' <<<"$COMPLETED_RAW"$'\n'"$CREATED_DONE")
+
+# Active = (owner:me, updated in window, not done) ∪ (requester:me, currently
+# in a started state), minus anything already in Completed.
+ACTIVE_UNION=$(jq -s 'add | unique_by(.id)' <<<"$ACTIVE_RAW"$'\n'"$CREATED_ACTIVE")
+COMPLETED_IDS=$(jq '[.[].id]' <<<"$COMPLETED")
+ACTIVE=$(jq --argjson skip "$COMPLETED_IDS" \
+  '[.[] | select(.id as $i | $skip | index($i) | not)]' <<<"$ACTIVE_UNION")
+
+# Created = leftover (backlog/unstarted/etc) requester-created stories.
+ACTIVE_IDS=$(jq '[.[].id]' <<<"$ACTIVE")
+SKIP_IDS=$(jq -s 'add | unique' <<<"$COMPLETED_IDS"$'\n'"$ACTIVE_IDS")
+CREATED=$(jq --argjson skip "$SKIP_IDS" \
+  '[.[] | select(.id as $i | $skip | index($i) | not)]' <<<"$CREATED_REST")
+
+cat <<EOF
+# Weekly Report — $FROM → $TO
+_User: \`$WHO\`_
+
+EOF
+
+section "Completed"               "$COMPLETED"  "completed_at"
+section "Created"                 "$CREATED"    "created_at"
+section "Active (not yet done)"   "$ACTIVE"     "updated_at"

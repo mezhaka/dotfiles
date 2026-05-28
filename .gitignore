@@ -1,2 +1,5 @@
 vim/.vim/bundle/vim-autocorrect/versions
 *.un~
+
+# Counter the global ~/.gitignore `bin/` rule for our stow target.
+!configs/local-bin/.local/bin/
