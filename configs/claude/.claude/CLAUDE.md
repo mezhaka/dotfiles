@@ -63,6 +63,10 @@ body at all — a clear subject line is enough.
 header — the opening paragraph is already understood to be the summary. Start
 directly with the summary content.
 
+**No `pre-commit` in the PR "Test plan"**: do not mention `pre-commit run` or
+any other `pre-commit` action in a "Test plan" section of a PR description.
+`pre-commit` already runs as part of CI, so there is no need to call it out.
+
 **Draft PR titles**: when opening a PR as a draft (`gh pr create --draft`),
 prepend `WIP: ` to the title (e.g. `WIP: Constrain apa-pm IAM (sc-36821)`).
 Drop the prefix when marking the PR ready for review.
