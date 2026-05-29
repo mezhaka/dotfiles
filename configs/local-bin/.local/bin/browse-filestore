@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+#
+# browse-filestore.sh — open an interactive shell with the Axioma Filestore
+# share mounted, for ad-hoc browsing.
+#
+# The share is the GCP Filestore instance "axioma-filestore" (NFS share
+# "axioma_data"), surfaced into GKE as the ReadWriteMany PVC
+# "axioma-filestore-apa-proxy" in the "services" namespace. Because the PVC is
+# ReadWriteMany, this throwaway pod mounts it alongside the running workloads
+# without disrupting them.
+#
+# The pod is created with --rm, so it is deleted automatically when you exit
+# the shell. The share is mounted read-write from GKE pods, so be careful not
+# to modify its contents — batch jobs depend on the risk-model files there.
+#
+# Usage:
+#   browse-filestore.sh                 # interactive shell, share at /data
+#   browse-filestore.sh -- ls -la /data # run a one-off command and exit
+#
+# Override defaults via environment variables:
+#   FS_PROJECT    GCP project           (default: lofty-seer-161814)
+#   FS_CLUSTER    GKE cluster name      (default: ultramarin-cluster)
+#   FS_LOCATION   GKE cluster location  (default: europe-west3-b — zonal)
+#   FS_NAMESPACE  Kubernetes namespace  (default: services)
+#   FS_PVC        PVC to mount         (default: axioma-filestore-apa-proxy)
+#   FS_IMAGE      container image      (default: alpine)
+#   FS_MOUNT      mount path in pod    (default: /data)
+
+set -euo pipefail
+
+FS_PROJECT="${FS_PROJECT:-lofty-seer-161814}"
+FS_CLUSTER="${FS_CLUSTER:-ultramarin-cluster}"
+FS_LOCATION="${FS_LOCATION:-europe-west3-b}"
+FS_NAMESPACE="${FS_NAMESPACE:-services}"
+FS_PVC="${FS_PVC:-axioma-filestore-apa-proxy}"
+FS_IMAGE="${FS_IMAGE:-alpine}"
+FS_MOUNT="${FS_MOUNT:-/data}"
+
+# Everything after a literal `--` is run as a one-off command in the pod;
+# with no command, drop into an interactive shell.
+cmd=()
+if [[ "${1:-}" == "--" ]]; then
+  shift
+  cmd=("$@")
+fi
+
+# A unique-ish pod name avoids collisions if two browse sessions overlap.
+# Date.now()-style entropy isn't available; fall back to PID + epoch seconds.
+pod="filestore-browser-$$-$(date +%s)"
+
+# The --overrides JSON fully replaces the container spec, so the command to run
+# must live inside it — kubectl's own `-- args` are ignored when overrides
+# specify a command. Interactive sessions get a plain `sh` with stdin+tty; a
+# one-off `browse-filestore -- <cmd>` runs `sh -c "<cmd>"` and exits.
+if [[ ${#cmd[@]} -gt 0 ]]; then
+  cmd_str="$*"
+  # JSON-escape backslashes then double quotes for embedding in the heredoc.
+  cmd_str="${cmd_str//\\/\\\\}"
+  cmd_str="${cmd_str//\"/\\\"}"
+  container_command="[\"sh\", \"-c\", \"${cmd_str}\"]"
+  stdin_tty="\"stdin\": false, \"tty\": false"
+else
+  container_command='["sh"]'
+  stdin_tty="\"stdin\": true, \"tty\": true"
+fi
+
+overrides=$(cat <<JSON
+{
+  "spec": {
+    "containers": [{
+      "name": "browser",
+      "image": "${FS_IMAGE}",
+      ${stdin_tty},
+      "command": ${container_command},
+      "volumeMounts": [{"name": "fs", "mountPath": "${FS_MOUNT}"}]
+    }],
+    "volumes": [{
+      "name": "fs",
+      "persistentVolumeClaim": {"claimName": "${FS_PVC}"}
+    }]
+  }
+}
+JSON
+)
+
+# Ensure we have credentials for the cluster. get-credentials is idempotent and
+# cheap, so just run it every time rather than probing the current context.
+echo "==> Fetching credentials for ${FS_CLUSTER} (${FS_LOCATION}, ${FS_PROJECT})…" >&2
+gcloud container clusters get-credentials "${FS_CLUSTER}" \
+  --location "${FS_LOCATION}" --project "${FS_PROJECT}" >/dev/null
+
+echo "==> Starting pod ${pod} in namespace ${FS_NAMESPACE} (share at ${FS_MOUNT})…" >&2
+echo "    The pod is deleted automatically when you exit." >&2
+
+if [[ ${#cmd[@]} -gt 0 ]]; then
+  # Non-interactive: attach to stream the command's output, then auto-delete.
+  exec kubectl run "${pod}" -n "${FS_NAMESPACE}" --rm --attach --restart=Never \
+    --image="${FS_IMAGE}" --overrides="${overrides}"
+else
+  exec kubectl run "${pod}" -n "${FS_NAMESPACE}" --rm -it --restart=Never \
+    --image="${FS_IMAGE}" --overrides="${overrides}"
+fi
