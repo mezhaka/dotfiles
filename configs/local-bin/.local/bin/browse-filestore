@@ -83,20 +83,28 @@ overrides=$(cat <<JSON
 JSON
 )
 
-# Ensure we have credentials for the cluster. get-credentials is idempotent and
-# cheap, so just run it every time rather than probing the current context.
-echo "==> Fetching credentials for ${FS_CLUSTER} (${FS_LOCATION}, ${FS_PROJECT})…" >&2
-gcloud container clusters get-credentials "${FS_CLUSTER}" \
-  --location "${FS_LOCATION}" --project "${FS_PROJECT}" >/dev/null
+# get-credentials writes a context named gke_<project>_<location>_<cluster>. If
+# that context already exists in the kubeconfig (the normal case), reuse it and
+# skip the gcloud call entirely — no point hitting the network when kubectl is
+# already set up. We pass --context explicitly so the pod always lands on the
+# right cluster regardless of which context is currently active.
+context="gke_${FS_PROJECT}_${FS_LOCATION}_${FS_CLUSTER}"
+if ! kubectl config get-contexts -o name 2>/dev/null | grep -qxF "${context}"; then
+  echo "==> Context ${context} not found; fetching credentials…" >&2
+  gcloud container clusters get-credentials "${FS_CLUSTER}" \
+    --location "${FS_LOCATION}" --project "${FS_PROJECT}" >/dev/null
+fi
 
 echo "==> Starting pod ${pod} in namespace ${FS_NAMESPACE} (share at ${FS_MOUNT})…" >&2
 echo "    The pod is deleted automatically when you exit." >&2
 
 if [[ ${#cmd[@]} -gt 0 ]]; then
   # Non-interactive: attach to stream the command's output, then auto-delete.
-  exec kubectl run "${pod}" -n "${FS_NAMESPACE}" --rm --attach --restart=Never \
+  exec kubectl run "${pod}" -n "${FS_NAMESPACE}" --context "${context}" \
+    --rm --attach --restart=Never \
     --image="${FS_IMAGE}" --overrides="${overrides}"
 else
-  exec kubectl run "${pod}" -n "${FS_NAMESPACE}" --rm -it --restart=Never \
+  exec kubectl run "${pod}" -n "${FS_NAMESPACE}" --context "${context}" \
+    --rm -it --restart=Never \
     --image="${FS_IMAGE}" --overrides="${overrides}"
 fi
