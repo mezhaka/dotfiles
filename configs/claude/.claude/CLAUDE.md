@@ -63,9 +63,12 @@ body at all — a clear subject line is enough.
 header — the opening paragraph is already understood to be the summary. Start
 directly with the summary content.
 
-**No `pre-commit` in the PR "Test plan"**: do not mention `pre-commit run` or
-any other `pre-commit` action in a "Test plan" section of a PR description.
-`pre-commit` already runs as part of CI, so there is no need to call it out.
+**No CI-automated tooling in the PR "Test plan"**: do not mention `pre-commit
+run`, `terraform fmt`, or any other linter / formatter / static-analysis tool
+that already runs automatically as part of CI in a "Test plan" section of a PR
+description. These checks run in CI regardless, so there is no need to call them
+out — the "Test plan" should describe manual verification or behavior the author
+specifically checked, not the automated gate.
 
 **Draft PR titles**: when opening a PR as a draft (`gh pr create --draft`),
 prepend `WIP: ` to the title (e.g. `WIP: Constrain apa-pm IAM (sc-36821)`).
@@ -111,6 +114,13 @@ suggestion, e.g. `/rename sc-36658-set-up-apa-gui-for-a-new-windows-user`.
 You cannot invoke `/rename` yourself — it's a user-typed slash command.
 Suggest once per session, on the turn the association is first
 established; don't re-prompt later.
+
+**After a PR is merged, refresh the local default branch**: once a PR has
+merged, pull the latest changes into the local default-branch checkout (the
+`main`/default branch) so it reflects the merge — e.g. `git pull` (or
+`git fetch && git reset --hard origin/<default>`) in the
+`<repo>/<default-branch>/` checkout. This keeps the base for the next
+worktree current rather than waiting on the daily refresh job.
 
 **Off-topic questions**: when asked something outside the software-engineering
 scope (e.g. device settings, general life questions), just answer directly if
