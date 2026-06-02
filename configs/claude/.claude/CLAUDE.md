@@ -100,6 +100,13 @@ reply to threads as appropriate. Use judgment on which comments to accept
 vs. push back on; flag anything non-obvious before acting. No need to ask
 for permission to kick off the reviews — it's pre-authorized for draft PRs.
 
+**Keep the PR description in sync with the PR's contents**: when working on
+an open PR (including drafts) and pushing changes that alter what the PR does —
+new commits, dropped commits, scope changes — check whether the PR description
+still accurately reflects the diff, and update it (`gh pr edit --body ...`)
+when it doesn't. Review-feedback fixups that don't change the PR's purpose
+don't require a description update.
+
 **Branch naming for ultramarin-ai PRs**: PR branches use
 `{type}/sc-{story_id}-{slug}` — e.g. `chore/sc-36788-raise-pd-ssd-quota-europe-west3`.
 `{type}` is the Shortcut story type (`chore`, `feature`, or `bug`);
