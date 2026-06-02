@@ -1,5 +1,21 @@
 Use `pre-commit run --all-files` for linting.
 
+**Python: `assert` only in unit test functions**: `assert` statements are
+stripped when the interpreter runs with optimizations (`python -O`), so a
+function that uses `assert` changes behavior depending on interpreter flags.
+In normal (non-test) code, raise an exception instead. For example, instead of
+
+```python
+assert some_variable is not None
+```
+
+do
+
+```python
+if some_variable is None:
+    raise ValueError("some_variable should not be None")
+```
+
 **No Claude Code attribution in PRs or commits**: when creating a PR, do not
 append the `🤖 Generated with [Claude Code](https://claude.com/claude-code)`
 footer to the body. When creating a commit, do not append the
