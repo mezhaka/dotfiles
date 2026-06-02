@@ -80,11 +80,12 @@ header — the opening paragraph is already understood to be the summary. Start
 directly with the summary content.
 
 **No CI-automated tooling in the PR "Test plan"**: do not mention `pre-commit
-run`, `terraform fmt`, or any other linter / formatter / static-analysis tool
-that already runs automatically as part of CI in a "Test plan" section of a PR
-description. These checks run in CI regardless, so there is no need to call them
-out — the "Test plan" should describe manual verification or behavior the author
-specifically checked, not the automated gate.
+run`, `terraform fmt`, `pixi run unit-test`, or any other linter / formatter /
+static-analysis / test-suite step that already runs automatically as part of CI
+in a "Test plan" section of a PR description. These checks run in CI regardless,
+so there is no need to call them out — the "Test plan" should describe manual
+verification or behavior the author specifically checked, not the automated
+gate.
 
 **Draft PR titles**: when opening a PR as a draft (`gh pr create --draft`),
 prepend `WIP: ` to the title (e.g. `WIP: Constrain apa-pm IAM (sc-36821)`).
