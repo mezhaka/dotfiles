@@ -41,7 +41,7 @@ if [ -n "$branch" ] && [ "$branch" != "(no branch)" ] && [ -n "$cwd" ]; then
     if [ "$cache_valid" -eq 1 ]; then
         pr_info=$(cat "$cache_file")
     else
-        pr_json=$(gh pr view --json number,title,state 2>/dev/null)
+        pr_json=$(gh pr view --json number,title,state,url 2>/dev/null)
         # Fallback: when the local branch name doesn't match the upstream remote
         # ref (e.g., `claude --worktree 'feature/foo'` rewrites `/` to `+` in the
         # local branch, but `gh pr view` looks the PR up by the literal local
@@ -49,7 +49,7 @@ if [ -n "$branch" ] && [ "$branch" != "(no branch)" ] && [ -n "$cwd" ]; then
         if [ -z "$pr_json" ]; then
             upstream_ref=$(git -C "$cwd" config "branch.$branch.merge" 2>/dev/null | sed 's|^refs/heads/||')
             if [ -n "$upstream_ref" ] && [ "$upstream_ref" != "$branch" ]; then
-                pr_json=$(cd "$cwd" && gh pr view "$upstream_ref" --json number,title,state 2>/dev/null)
+                pr_json=$(cd "$cwd" && gh pr view "$upstream_ref" --json number,title,state,url 2>/dev/null)
             fi
         fi
         # Second fallback: `claude --worktree` creates the local branch but
@@ -60,17 +60,25 @@ if [ -n "$branch" ] && [ "$branch" != "(no branch)" ] && [ -n "$cwd" ]; then
         if [ -z "$pr_json" ] && [[ "$branch" == worktree-* ]]; then
             derived_ref="${branch#worktree-}"
             derived_ref="${derived_ref//+//}"
-            pr_json=$(cd "$cwd" && gh pr view "$derived_ref" --json number,title,state 2>/dev/null)
+            pr_json=$(cd "$cwd" && gh pr view "$derived_ref" --json number,title,state,url 2>/dev/null)
         fi
         if [ -n "$pr_json" ]; then
             pr_num=$(echo "$pr_json" | jq -r '.number // empty')
             pr_title=$(echo "$pr_json" | jq -r '.title // empty')
             pr_state=$(echo "$pr_json" | jq -r '.state // empty')
+            pr_url=$(echo "$pr_json" | jq -r '.url // empty')
             if [ -n "$pr_num" ]; then
                 # Truncate title at 40 chars
                 short_title="${pr_title:0:40}"
                 [ ${#pr_title} -gt 40 ] && short_title="${short_title}..."
-                pr_info="PR#${pr_num} [${pr_state}]: ${short_title}"
+                # Wrap "PR#N" in an OSC 8 hyperlink so it's clickable in
+                # terminals that support them (VS Code, iTerm2, etc.).
+                if [ -n "$pr_url" ]; then
+                    pr_label=$(printf '\e]8;;%s\e\\PR#%s\e]8;;\e\\' "$pr_url" "$pr_num")
+                else
+                    pr_label="PR#${pr_num}"
+                fi
+                pr_info="${pr_label} [${pr_state}]: ${short_title}"
             else
                 pr_info="no PR"
             fi
