@@ -42,9 +42,9 @@ default opener. Skip restating the code-level diff — if a reader needs the
 small fixes (typos, dependency bumps, formatting-only changes) don't need a
 body at all — a clear subject line is enough.
 
-**Shortcut tooling — default to the `shotcut` MCP, fall back to `short` CLI**:
+**Shortcut tooling — default to the claude.ai Shortcut connector, fall back to `short` CLI**:
 
-- **Default**: use the `shotcut` MCP (`mcp__shotcut__*`) for any single-object
+- **Default**: use the claude.ai Shortcut connector (`mcp__claude_ai_Shortcut__*`) for any single-object
   operation — fetching a story or epic by ID, creating/updating a story,
   posting a comment, setting state, reading workflow/team/iteration metadata,
   getting a branch-name suggestion. Returns structured JSON, no shell parsing,
@@ -61,7 +61,7 @@ body at all — a clear subject line is enough.
   - **Scripted loops** over many stories where one MCP call per item would
     be wasteful — write the `short` pipeline once, run it in Bash.
 - **File uploads**: neither `short` (verified up to v5.0.0) nor
-  `mcp__shotcut__stories-upload-file` work for local files — `short` lacks the
+  `mcp__claude_ai_Shortcut__stories-upload-file` work for local files — `short` lacks the
   command, and the hosted MCP can't see the local filesystem. Use `curl`:
   ```
   SHORTCUT_TOKEN=$(jq -r .token ~/.config/shortcut-cli/config.json)
@@ -80,8 +80,9 @@ header — the opening paragraph is already understood to be the summary. Start
 directly with the summary content.
 
 **No CI-automated tooling in the PR "Test plan"**: do not mention `pre-commit
-run`, `terraform fmt`, `pixi run unit-test`, or any other linter / formatter /
-static-analysis / test-suite step that already runs automatically as part of CI
+run`, `terraform fmt`, `terraform validate`, `pixi run unit-test`, or any other
+linter / formatter / validation / static-analysis / test-suite step that already
+runs automatically as part of CI
 in a "Test plan" section of a PR description. These checks run in CI regardless,
 so there is no need to call them out — the "Test plan" should describe manual
 verification or behavior the author specifically checked, not the automated
@@ -91,14 +92,19 @@ gate.
 prepend `WIP: ` to the title (e.g. `WIP: Constrain apa-pm IAM (sc-36821)`).
 Drop the prefix when marking the PR ready for review.
 
-**Draft PR reviews — trigger Copilot + Gemini, then act on their comments**:
-when asked to create a draft PR, after opening it, request reviews from
-GitHub Copilot and Gemini (whichever bots are configured on the repo), then
-wait for their review comments to land and address them on the user's
-behalf — apply suggested fixes, push follow-up commits, and resolve or
-reply to threads as appropriate. Use judgment on which comments to accept
-vs. push back on; flag anything non-obvious before acting. No need to ask
-for permission to kick off the reviews — it's pre-authorized for draft PRs.
+**CHANGELOG entry when promoting a draft PR**: when marking a draft PR ready
+for review, propose adding an entry to the repo's CHANGELOG that summarizes
+the PR's current work, if the repo keeps one. Draft the entry and ask before
+committing it rather than adding it silently.
+
+**Draft PR reviews — trigger Copilot, then act on its comments**:
+when asked to create a draft PR, after opening it, request a review from
+GitHub Copilot, then wait for its review comments to land and address them
+on the user's behalf — apply suggested fixes, push follow-up commits, and
+resolve or reply to threads as appropriate. Use judgment on which comments
+to accept vs. push back on; flag anything non-obvious before acting. No need
+to ask for permission to kick off the review — it's pre-authorized for
+draft PRs.
 
 **Keep the PR description in sync with the PR's contents**: when working on
 an open PR (including drafts) and pushing changes that alter what the PR does —
@@ -114,13 +120,13 @@ don't require a description update.
 description. Only the `sc-{id}` token matters for Shortcut's GitHub
 integration to auto-link the PR — the slug is free-form (verified 2026-04-28
 against story sc-36789). To fetch Shortcut's own suggestion non-interactively,
-the `shotcut` MCP exposes `mcp__shotcut__stories-get-branch-name`. **Pick the
+the claude.ai Shortcut connector exposes `mcp__claude_ai_Shortcut__stories-get-branch-name`. **Pick the
 branch name before opening the PR**: renaming the branch of an open PR has
 been observed to close the PR (see project auto-memory
 `branch_naming_convention.md`). **If asked to open a PR and no Shortcut
 story is known from the conversation context**, do NOT invent a
 non-conforming branch name — first ask the user for the story ID, or
-suggest creating one (e.g. via `mcp__shotcut__stories-create`) before
+suggest creating one (e.g. via `mcp__claude_ai_Shortcut__stories-create`) before
 creating the branch.
 
 **Session naming for Shortcut work**: when this session's work becomes
@@ -133,7 +139,7 @@ directory like `~/t/e`, so cwd at launch is *not* the signal; wait until
 the story or worktree comes up in the conversation. The rename target is
 the post-`{type}/` slug — `sc-{story_id}-{slug}`, not the full branch
 path. If only the story ID is known, look up the slug via
-`mcp__shotcut__stories-get-branch-name`. Phrase as a one-line paste-ready
+`mcp__claude_ai_Shortcut__stories-get-branch-name`. Phrase as a one-line paste-ready
 suggestion, e.g. `/rename sc-36658-set-up-apa-gui-for-a-new-windows-user`.
 You cannot invoke `/rename` yourself — it's a user-typed slash command.
 Suggest once per session, on the turn the association is first
