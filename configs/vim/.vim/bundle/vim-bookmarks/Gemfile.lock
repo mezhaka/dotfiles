@@ -10,11 +10,11 @@ GEM
       celluloid (>= 0.15.0)
       nio4r (>= 0.5.0)
     coderay (1.1.0)
-    faraday (2.14.2)
+    faraday (2.14.3)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
-    faraday-net_http (3.4.3)
+    faraday-net_http (3.4.4)
       net-http (~> 0.5)
     ffi (1.13.1)
     formatador (0.2.4)
@@ -26,7 +26,7 @@ GEM
       thor (>= 0.18.1)
     guard-shell (0.6.1)
       guard (>= 1.1.0)
-    json (2.19.5)
+    json (2.20.0)
     listen (2.7.1)
       celluloid (>= 0.15.2)
       celluloid-io (>= 0.15.0)
