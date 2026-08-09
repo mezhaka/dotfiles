@@ -26,7 +26,7 @@ GEM
       thor (>= 0.18.1)
     guard-shell (0.6.1)
       guard (>= 1.1.0)
-    json (2.20.0)
+    json (2.21.2)
     listen (2.7.1)
       celluloid (>= 0.15.2)
       celluloid-io (>= 0.15.0)
