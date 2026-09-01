@@ -97,6 +97,20 @@ for review, propose adding an entry to the repo's CHANGELOG that summarizes
 the PR's current work, if the repo keeps one. Draft the entry and ask before
 committing it rather than adding it silently.
 
+**Reconcile the PR description when promoting a draft to ready**: marking a
+draft ready is a description-sync checkpoint, not just a CHANGELOG one. Before
+flipping it, re-read the body and rewrite anything the promotion or an
+out-of-band action has made stale: references to the PR being a draft/WIP or
+"pending coordination"; future-tense plans or "not yet done" caveats for work
+that has since happened (e.g. a `terraform apply` already run, a step already
+verified); and Test-plan items that were speculative when drafted but have now
+actually passed — mark those done. If part of the change was already
+applied/deployed ahead of merge, say so explicitly: it tells the merger the PR
+is reconciling the default branch with live state. This complements "Keep the
+PR description in sync with the PR's contents" below, which covers
+diff-altering pushes; this clause covers state changes that leave the diff
+untouched.
+
 **Draft PR reviews — trigger Copilot, then act on its comments**:
 when asked to create a draft PR, after opening it, request a review from
 GitHub Copilot, then wait for its review comments to land and address them
