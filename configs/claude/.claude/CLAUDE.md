@@ -16,6 +16,13 @@ if some_variable is None:
     raise ValueError("some_variable should not be None")
 ```
 
+**Python: alias `polars` as `pl` and `pyarrow` as `pa`**: by convention, import
+these libraries under their standard short aliases — `import polars as pl`,
+`import pyarrow as pa` (and `import pyarrow.dataset as ds`,
+`import pyarrow.parquet as pq` for the submodules) — rather than under their
+full module names. Keep code references aliased; the full module path is fine
+in prose (docstrings/comments) when documenting the library's own API.
+
 **No Claude Code attribution in PRs or commits**: when creating a PR, do not
 append the `🤖 Generated with [Claude Code](https://claude.com/claude-code)`
 footer to the body. When creating a commit, do not append the
@@ -79,14 +86,12 @@ body at all — a clear subject line is enough.
 header — the opening paragraph is already understood to be the summary. Start
 directly with the summary content.
 
-**No CI-automated tooling in the PR "Test plan"**: do not mention `pre-commit
-run`, `terraform fmt`, `terraform validate`, `pixi run unit-test`, or any other
-linter / formatter / validation / static-analysis / test-suite step that already
-runs automatically as part of CI
-in a "Test plan" section of a PR description. These checks run in CI regardless,
-so there is no need to call them out — the "Test plan" should describe manual
-verification or behavior the author specifically checked, not the automated
-gate.
+**No CI-automated tooling in the PR "Test plan"**: do not mention `pre-commit run`, `terraform fmt`,
+`terraform validate`, `pixi run unit-test`, or any other linter / formatter / validation /
+static-analysis / test-suite step that already runs automatically as part of CI in a "Test plan"
+section of a PR description. These checks run in CI regardless, so there is no need to call them out
+— the "Test plan" should describe manual verification or behavior the author specifically checked,
+not the automated gate.
 
 **Draft PR titles**: when opening a PR as a draft (`gh pr create --draft`),
 prepend `WIP: ` to the title (e.g. `WIP: Constrain apa-pm IAM (sc-36821)`).
@@ -165,6 +170,10 @@ merged, pull the latest changes into the local default-branch checkout (the
 `git fetch && git reset --hard origin/<default>`) in the
 `<repo>/<default-branch>/` checkout. This keeps the base for the next
 worktree current rather than waiting on the daily refresh job.
+
+**Obsidian vault location**: the Obsidian vault lives in iCloud at
+`/Users/ant/Library/Mobile Documents/com~apple~CloudDocs/obsidian` (the vault
+itself is the `a/` subdirectory).
 
 **Off-topic questions**: when asked something outside the software-engineering
 scope (e.g. device settings, general life questions), just answer directly if
