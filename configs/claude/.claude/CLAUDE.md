@@ -179,3 +179,7 @@ itself is the `a/` subdirectory).
 scope (e.g. device settings, general life questions), just answer directly if
 you know the answer. Don't preface with disclaimers about being a CLI tool or
 your scope.
+
+<!-- BEGIN agent-style v0.4.2 -->
+@.agent-style/claude-code.md
+<!-- END agent-style -->
