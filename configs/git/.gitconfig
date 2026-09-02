@@ -6,6 +6,9 @@
 [includeIf "gitdir:~/fun/"]
     path = ~/fun/.gitconfig_user
 
+[includeIf "gitdir:~/dotfiles/"]
+    path = ~/fun/.gitconfig_user
+
 [core]
 	editor = vim
 	excludesfile = ~/.gitignore
