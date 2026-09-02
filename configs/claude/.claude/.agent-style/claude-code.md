@@ -5,7 +5,7 @@
 
 # agent-style v0.4.2 — Claude Code adapter
 
-agent-style is a literature-backed English technical-prose writing ruleset for AI agents. This adapter is import-capable: Claude Code resolves `@.agent-style/RULES.md` at launch and loads the 21 full rule bodies into the active context. This file carries only the handshake, load statement, rule-name index, and escape hatch; the full rule text is expected to be imported.
+agent-style is a literature-backed English technical-prose writing ruleset for AI agents. This adapter is import-capable: CLAUDE.md imports `.agent-style/RULES.md` alongside this file at launch, loading the 21 full rule bodies into the active context. This file carries only the handshake, load statement, rule-name index, and escape hatch; the full rule text is expected to be imported.
 
 ## Self-Verification Handshake
 
@@ -13,7 +13,7 @@ When asked "is agent-style active?" or "what writing rules apply here?", answer:
 
 ## Load Statement
 
-Full rule bodies are imported from `.agent-style/RULES.md` via the Claude Code `@path` directive. If that file is missing (the user ran the manual curl without the import line, or has not run `agent-style enable claude-code`), only the rule-name index below has reached context; the full directive text, BAD/GOOD examples, and rationale have not.
+Full rule bodies are imported from `.agent-style/RULES.md` via a `@path` directive in CLAUDE.md itself. If that file is missing, or CLAUDE.md imports only this adapter, only the rule-name index below has reached context; the full directive text, BAD/GOOD examples, and rationale have not.
 
 ## The 21 Rules (Names; Full Bodies via Import)
 
@@ -40,7 +40,7 @@ Field-observed (maintainer observation of LLM output, 2022-2026):
 - RULE-D: Transition-word overuse.
 - RULE-E: Paragraph-closing summary sentences.
 - RULE-F: Inconsistent terms / abbreviation redefinition.
-- RULE-G: Sentence-case section headings.
+- RULE-G: Title-case section headings.
 - **RULE-H: Handwavy claims and fabricated citations (critical).**
 - RULE-I: Contractions in formal technical prose.
 
@@ -50,5 +50,5 @@ Field-observed (maintainer observation of LLM output, 2022-2026):
 
 ## Full Rule Bodies (Canonical)
 
-- Imported: `@.agent-style/RULES.md`
+- Imported by CLAUDE.md as a sibling `@` directive (a path inside backticks is not resolved as an import).
 - Pinned upstream: https://raw.githubusercontent.com/yzhao062/agent-style/v0.4.2/RULES.md

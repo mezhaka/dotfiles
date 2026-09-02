@@ -182,4 +182,5 @@ your scope.
 
 <!-- BEGIN agent-style v0.4.2 -->
 @.agent-style/claude-code.md
+@.agent-style/RULES.md
 <!-- END agent-style -->
