@@ -1,5 +1,12 @@
 ;[include]
     ;path = ~/.gitconfig_user # put your [user] there
+
+; Default identity. Kept above the includeIf blocks on purpose:
+; later values win, so the per-directory includes below override it.
+[user]
+	name = Anton Daneyko
+	email = 1176545+mezhaka@users.noreply.github.com
+
 [includeIf "gitdir:~/t/"]
     path = ~/t/.gitconfig_user
 
