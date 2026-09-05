@@ -180,7 +180,7 @@ scope (e.g. device settings, general life questions), just answer directly if
 you know the answer. Don't preface with disclaimers about being a CLI tool or
 your scope.
 
-<!-- BEGIN agent-style v0.4.2 -->
-@.agent-style/claude-code.md
-@.agent-style/RULES.md
-<!-- END agent-style -->
+**Prose style**: before writing or editing prose that others will read (Markdown
+or LaTeX documents, PR descriptions, commit bodies, release notes), invoke the
+`agent-style` skill. It carries the 21 agent-style writing rules; the rule
+bodies stay out of context until then.
